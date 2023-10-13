@@ -30,43 +30,6 @@ with lib;
     default = null;
   };
 
-  disks = mkOption {
-    default = { };
-    type = with types; attrsOf (submodule {
-      options = {
-        source = mkOption {
-          type = types.str;
-          description = lib.mdDoc ''
-            Path on the host, either to a file/directory or to a block device
-          '';
-        };
-        path = mkOption {
-          type = types.str;
-          description = lib.mdDoc ''
-            Path inside the instance where the disk will be mounted (only for containers).
-          '';
-        };
-        shift = mkOption {
-          default = false;
-          description = lib.mdDoc ''
-            Setup a shifting overlay to translate the source uid/gid to match the instance (only for containers)
-          '';
-          type = types.bool;
-        };
-        options = mkOption {
-          type = with types; attrs;
-          description = lib.mdDoc ''
-            Other options. See https://documentation.ubuntu.com/lxd/en/stable-4.0/instances/#type-disk
-          '';
-          default = {};
-        };
-      };
-    });
-    description = lib.mdDoc ''
-      Disk devices.
-    '';
-  };
-
   config = mkOption {
     type = with types; nullOr attrs;
     description = lib.mdDoc ''
@@ -74,4 +37,21 @@ with lib;
     '';
     default = null;
   };
+
+  devices = mkOption {
+    type = with types; nullOr attrs;
+    description = lib.mdDoc ''
+      All devices.
+    '';
+    default = null;
+  };
+
+  profiles = mkOption {
+    type = with types; nullOr (listOf str);
+    description = lib.mdDoc ''
+      Profiles
+    '';
+    default = null;
+  };
+
 }
