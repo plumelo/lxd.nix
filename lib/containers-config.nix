@@ -3,9 +3,9 @@ let
   containers = config.virtualisation.lxd.containers;
   package = config.virtualisation.lxd.package;
   configFormat = pkgs.formats.yaml { };
-  mkService = { name, enable, auto, container, config, devices, profiles, ... }@cfg:
+  mkService = { name, enable, auto, image, config, devices, profiles, ... }@cfg:
     let
-      sys = (container.extendModules {
+      sys = (image.extendModules {
         modules = [
           "${modulesPath}/virtualisation/lxc-container.nix"
         ];
@@ -29,13 +29,17 @@ let
       script = ''
         root=$(find ${root} -name "*.tar.xz" -xtype f -print -quit)
         metadata=$(find ${metadata} -name "*.tar.xz" -xtype f -print -quit)
+        fg=$(lxc image info play-image | yq '.Fingerprint')
         if lxc image import $metadata $root --alias ${name}-image; then
+          lxc image delete $fg
           if lxc info ${name}; then
             lxc delete -f ${name}
           fi
           lxc launch ${name}-image ${name}
         fi
         lxc config show ${name} | yq '. *= load("${configFormat.generate "lxd-container-${name}-config.yaml" instanceConf}")' | lxc config edit ${name}
+        lxc stop ${name}
+        lxc start ${name}
       '';
       serviceConfig = {
         Type = "oneshot";
