@@ -22,7 +22,7 @@ with lib;
     type = types.bool;
   };
 
-  container = mkOption {
+  image = mkOption {
     type = with types; attrs;
     description = lib.mdDoc ''
       A NixOS system. The result of a `nixpkgs.lib.nixosSystem` call.
