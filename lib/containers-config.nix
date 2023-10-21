@@ -38,8 +38,7 @@ let
           lxc launch ${name}-image ${name}
         fi
         lxc config show ${name} | yq '. *= load("${configFormat.generate "lxd-container-${name}-config.yaml" instanceConf}")' | lxc config edit ${name}
-        lxc stop ${name}
-        lxc start ${name}
+        lxc restart ${name} || true
       '';
       serviceConfig = {
         Type = "oneshot";
