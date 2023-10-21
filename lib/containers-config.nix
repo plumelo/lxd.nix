@@ -31,7 +31,7 @@ let
         metadata=$(find ${metadata} -name "*.tar.xz" -xtype f -print -quit)
         fg=$(lxc image info play-image | yq '.Fingerprint')
         if lxc image import $metadata $root --alias ${name}-image; then
-          lxc image delete $fg
+          lxc image delete $fg || true
           if lxc info ${name}; then
             lxc delete -f ${name}
           fi
