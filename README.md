@@ -1,2 +1,2 @@
-# vms.nix
-Run NixOS VMS with qemu
+# lxd.nix
+Run NixOS containers with LXD. 
